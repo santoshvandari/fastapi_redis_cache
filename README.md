@@ -26,14 +26,13 @@ pip install fastapi uvicorn aiocache redis
 
 ```
 fastapi_caching/
-├── main.py              # Example FastAPI application with 8 endpoints
+├── main.py              # Example FastAPI application
 ├── redis_cache/
 │   ├── __init__.py      # Package exports
 │   ├── cache.py         # Cache decorator with logging
 │   ├── clear.py         # Cache clearing utilities
 │   └── client.py        # Redis client initialization
 ├── requirements.txt     # Python dependencies
-├── .env.example         # Environment configuration template
 └── README.md            # This file
 ```
 
@@ -76,9 +75,7 @@ async def lifespan(app: FastAPI):
     redis_client = RedisCacheInit(
         hostname="localhost",
         port=6379,
-        namespace="my_app",
-        timeout=5,
-        db=0
+        timeout=5
     )
     cache_instance = await redis_client.initialize()
     
@@ -143,15 +140,14 @@ await clear_cache()
 
 - `hostname` (str): Redis server hostname (default: "localhost")
 - `port` (int): Redis server port (default: 6379)
-- `namespace` (str): Global namespace prefix (default: "main")
 - `timeout` (int): Connection timeout in seconds (default: 5)
-- `db` (int): Redis database number 0-15 (default: 0)
 
 ### Cache Decorator Parameters
 
 - `expire` (int): Cache TTL in seconds (default: 60)
 - `key` (str, optional): Custom cache key
 - `namespace` (str, optional): Namespace prefix for the cache key
+- `key_builder` (Callable, optional): Custom function to build cache key
 
 ## How It Works
 
@@ -180,7 +176,6 @@ await clear_cache()
 - Check hostname and port in configuration
 - Verify firewall rules if Redis is on a remote server
 - Check logs for detailed error messages
-- Verify the correct database number (default: 0)
 
 ### Cache Not Working
 
